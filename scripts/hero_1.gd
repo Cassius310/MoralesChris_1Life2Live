@@ -1,17 +1,14 @@
 extends CharacterBody3D
-
+class_name Player
 
 @onready var camera_mount: Node3D = $camera_mount
 @onready var animation_player: AnimationPlayer = $visuals/mixamo_base/AnimationPlayer
+@onready var hurt_overlay: TextureRect = $HurtOverlay
+@onready var health_bar: ProgressBar = $HealthBar
 
 @onready var visuals: Node3D = $visuals
 
-
-
-
-
-
-
+@export var fall_damage_threshold = 20
 ## Can we move around?
 @export var can_move : bool = true
 ## Are we affected by gravity?
@@ -22,6 +19,16 @@ extends CharacterBody3D
 @export var can_sprint : bool = false
 ## Can we press to enter freefly mode (noclip)?
 @export var can_freefly : bool = false
+
+var stand_height : float
+var old_vel : float = 0.0
+var health = 100
+var hurt_tween : Tween
+
+
+@export var knock_down : bool = true
+
+@export var get_up : bool = true
 
 @export var is_locked = false
 
@@ -53,6 +60,20 @@ extends CharacterBody3D
 ## Name of Input Action to toggle freefly mode.
 @export var input_freefly : String = "freefly"
 
+@export var crouch_height: float = 1.0
+@export var crouch_transition: float = 10.0
+var is_crouching: bool = false
+func crouch(delta: float, reverse := false) -> void:
+	var target_height := stand_height if reverse else crouch_height
+
+	head.position.y = lerp(
+		head.position.y,
+		target_height,
+		crouch_transition * delta
+	)
+	
+	 
+
 var mouse_captured : bool = false
 var look_rotation : Vector2
 var move_speed : float = 0.0
@@ -60,12 +81,13 @@ var freeflying : bool = false
 
 ## IMPORTANT REFERENCES
 @onready var head: Node3D = $camera_mount
-@onready var collider:  = $camera_mount
+@onready var collider = $camera_mount
 
 func _ready() -> void:
 	check_input_mappings()
 	look_rotation.y = rotation.y
 	look_rotation.x = head.rotation.x
+	stand_height = head.position.y
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Mouse capturing
@@ -151,8 +173,15 @@ func _physics_process(delta: float) -> void:
 	
 	if !is_locked:# Use velocity to actually move
 		move_and_slide()
-
-
+	#falldamage
+		
+		if old_vel < 0:
+			var diff = velocity.y - old_vel
+			if diff > fall_damage_threshold:
+				hurt(diff - fall_damage_threshold)
+				crouch(delta)
+	old_vel = velocity.y
+	
 ## Rotate us to look around.
 ## Base of controller rotates around y (left/right). Head rotates around x (up/down).
 ## Modifies look_rotation based on rot_input, then resets basis and rotates by look_rotation.
@@ -186,6 +215,20 @@ func release_mouse():
 	mouse_captured = false
 
 
+
+
+	
+
+
+	
+	
+func hurt(damage : float):
+	health_bar.value -= damage
+	hurt_overlay.modulate = Color.WHITE
+	if hurt_tween:
+		hurt_tween.kill()
+		hurt_tween = create_tween()
+		hurt_tween.tween_property(hurt_overlay, "modulate", Color.TRANSPARENT, 0.5)
 ## Checks if some Input Actions haven't been created.
 ## Disables functionality accordingly.
 func check_input_mappings():

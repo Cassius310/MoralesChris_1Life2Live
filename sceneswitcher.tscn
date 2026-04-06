@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://dax7nxgfgf3py"]
+
+[ext_resource type="Script" uid="uid://bn5feg36itlcw" path="res://scene_switcher.gd" id="1_a5ama"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_x136p"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_1fgbg"]
+
+[node name="Area3D" type="Area3D" unique_id=253710848]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("1_a5ama")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1478741947]
+shape = SubResource("BoxShape3D_x136p")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=815251001]
+mesh = SubResource("BoxMesh_1fgbg")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
