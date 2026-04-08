@@ -90,6 +90,7 @@ func _ready() -> void:
 	stand_height = head.position.y
 
 func _unhandled_input(event: InputEvent) -> void:
+
 	# Mouse capturing
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		capture_mouse()

@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bhyg1xfji6svo" path="res://scenes/Scenes/mat_pillar.tscn" id="2_55hoc"]
 [ext_resource type="PackedScene" uid="uid://bwjsoev0nltdr" path="res://scenes/Hero1.tscn" id="2_d8hc3"]
 [ext_resource type="PackedScene" uid="uid://bia300b7vraio" path="res://scenes/Scenes/wall.tscn" id="4_ryjvv"]
+[ext_resource type="PackedScene" uid="uid://dax7nxgfgf3py" path="res://sceneswitcher.tscn" id="5_ryjvv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_d8hc3"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -206,3 +207,7 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -22.
 
 [node name="Wall48" parent="." unique_id=485995318 instance=ExtResource("4_ryjvv")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -22.499998, 0, -21.9)
+
+[node name="Area3D" parent="." unique_id=253710848 instance=ExtResource("5_ryjvv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.6, 0.5, 0)
+to_scene = "uid://cbc7xunqueoap"
